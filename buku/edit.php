@@ -3,8 +3,15 @@ require '../config.php';
 require '../middleware/auth.php';
 
 $slug = $_GET['slug'];
+
 $result = mysqli_query($conn, "SELECT judul, slug, kategori_id, penulis, penerbit, tahun_terbit, stok, cover FROM buku WHERE slug = '$slug'");
 $buku = mysqli_fetch_assoc($result);
+
+
+if (!$buku) {
+  echo "<script>alert('Data buku tidak ditemukan'); window.location.href='../buku.php';</script>";
+  exit;
+}
 
 $query_kategori = mysqli_query($conn, "SELECT id, nama_kategori FROM kategori");
 

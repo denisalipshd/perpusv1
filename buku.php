@@ -2,9 +2,17 @@
 require 'config.php';
 require 'middleware/auth.php';
 
+if(session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+$user = $_SESSION['user'];
+
 $sql = "SELECT buku.judul, buku.slug, buku.cover, buku.penulis, buku.penerbit, buku.tahun_terbit, buku.stok, kategori.nama_kategori FROM buku
         JOIN kategori ON buku.kategori_id = kategori.id";
 $result = mysqli_query($conn, $sql);
+
+$isA
 
 ?>
 
@@ -34,9 +42,12 @@ $result = mysqli_query($conn, $sql);
           <!-- header -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0">Daftar Buku</h5>
+            <?php if($user['role'] === 'admin') : ?>
             <a href="buku/tambah.php" class="btn btn-primary"> <i class="bi bi-plus-circle"></i> Tambah Buku </a>
+            <?php endif; ?>
           </div>
 
+          <?php if($user['role'] === 'admin') : ?>
           <table class="table table-striped">
             <thead>
               <tr class="text-center">
@@ -71,6 +82,60 @@ $result = mysqli_query($conn, $sql);
               <?php endwhile; ?>
             </tbody>
           </table>
+          <?php endif; ?>
+
+          <?php if($user['role'] === 'anggota') : ?>
+          <div class="row">
+            <?php while($data = mysqli_fetch_assoc($result)) : ?>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <img src="utils/uploads/buku/<?= $data['cover'] ?>" class="card-img-top" alt="..." style="height: 280px; object-fit: cover;">
+                <div class="card-body">
+                  <h5 class="card-title"><?= $data['judul'] ?></h5>
+                  <a href="#" type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#exampleModal">Pinjam</a>
+                </div>
+              </div>
+            </div>
+            <?php endwhile; ?>
+          </div>
+          
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Formulir</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p class="text-danger">Silahkan isi data ini terlebih dahulu!</p>
+                  <form action="" method="POST">
+                    <div class="mb-3">
+                      <label for="nis" class="form-label">NIS</label>
+                      <input type="text" id="nis" name="nis" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="kelas" class="form-label">Kelas</label>
+                      <input type="text" id="kelas" name="kelas" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="alamat" class="form-label">Alamat</label>
+                      <input type="text" id="alamat" name="alamat" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="no_telp" class="form-label">No. Telp</label>
+                      <input type="number" id="no_telp" name="no_telp" class="form-control" required>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                  <button type="button" class="btn btn-primary">Simpan</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <?php endif; ?>
         </div>
       </main>
     </div>

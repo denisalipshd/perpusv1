@@ -75,11 +75,11 @@ if(isset($_POST['simpan'])) {
           <form action="" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="judulBuku" class="form-label">Judul Buku</label>
-              <input type="text" class="form-control" name="judul" id="judulBuku" placeholder="Masukkan judul buku" />
+              <input type="text" class="form-control" name="judul" id="judulBuku" placeholder="Masukkan judul buku" required/>
             </div>
             <div class="mb-3">
               <label for="kategoriBuku" class="form-label">Kategori Buku</label>
-              <select class="form-control" name="kategori_id" id="kategoriBuku">
+              <select class="form-control" name="kategori_id" id="kategoriBuku" required>
                 <option value="">Pilih Kategori</option>
                 <?php while($data_kategori = mysqli_fetch_assoc($query_kategori)): ?>
                     <option value="<?= $data_kategori['id'] ?>"><?= $data_kategori['nama_kategori'] ?></option>
@@ -88,23 +88,23 @@ if(isset($_POST['simpan'])) {
             </div>
             <div class="mb-3">
               <label for="penulisBuku" class="form-label">Penulis</label>
-              <input type="text" class="form-control" name="penulis" id="penulisBuku" placeholder="Masukkan penulis buku" />
+              <input type="text" class="form-control" name="penulis" id="penulisBuku" placeholder="Masukkan penulis buku" required/>
             </div>
             <div class="mb-3">
               <label for="penerbitBuku" class="form-label">Penerbit</label>
-              <input type="text" class="form-control" name="penerbit" id="penerbitBuku" placeholder="Masukkan penerbit buku" />
+              <input type="text" class="form-control" name="penerbit" id="penerbitBuku" placeholder="Masukkan penerbit buku" required/>
             </div>
             <div class="mb-3">
               <label for="tahunTerbit" class="form-label">Tahun Terbit</label>
-              <input type="text" class="form-control" name="tahun_terbit" id="tahunTerbit" placeholder="Masukkan tahun terbit buku" />
+              <input type="text" class="form-control" name="tahun_terbit" id="tahunTerbit" placeholder="Masukkan tahun terbit buku" required/>
             </div>
             <div class="mb-3">
               <label for="stok" class="form-label">Stok</label>
-              <input type="text" class="form-control" name="stok" id="stok" placeholder="Masukkan stok buku" />
+              <input type="text" class="form-control" name="stok" id="stok" placeholder="Masukkan stok buku" required/>
             </div>
             <div class="mb-3">
               <label for="thumbnail" class="form-label">Cover</label>
-              <input type="file" class="form-control" name="cover" id="thumbnail" placeholder="Masukkan cover buku" />
+              <input type="file" class="form-control" name="cover" id="thumbnail" placeholder="Masukkan cover buku" required/>
             </div>
             <button type="submit" name="simpan" class="btn btn-primary"><i class="bi bi-save"></i> Simpan</button>
           </form>
