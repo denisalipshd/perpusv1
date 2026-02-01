@@ -12,7 +12,23 @@ $sql = "SELECT buku.judul, buku.slug, buku.cover, buku.penulis, buku.penerbit, b
         JOIN kategori ON buku.kategori_id = kategori.id";
 $result = mysqli_query($conn, $sql);
 
-$isA
+$user_id = (int)$user['id'];
+$isUserId = mysqli_query($conn, "SELECT user_id FROM anggota WHERE user_id = '$user_id'");
+
+if(isset($_POST['simpan_data_diri'])) {
+  // data diri
+  $nis = htmlspecialchars($_POST['nis']);
+  $kelas = htmlspecialchars($_POST['kelas']);
+  $alamat = htmlspecialchars($_POST['alamat']);
+  $no_telp = htmlspecialchars($_POST['no_telp']);
+
+  $sql = "INSERT INTO anggota (user_id, nis, kelas, alamat, no_telp) VALUES ('$user_id', '$nis', '$kelas', '$alamat', '$no_telp')";
+  $query = mysqli_query($conn, $sql);
+
+  if($query) {
+    echo "<script>alert('Formulir data diri berhasil diisi!')</script>";
+  }
+}
 
 ?>
 
@@ -92,23 +108,57 @@ $isA
                 <img src="utils/uploads/buku/<?= $data['cover'] ?>" class="card-img-top" alt="..." style="height: 280px; object-fit: cover;">
                 <div class="card-body">
                   <h5 class="card-title"><?= $data['judul'] ?></h5>
-                  <a href="#" type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#exampleModal">Pinjam</a>
+                  <?php if(mysqli_num_rows($isUserId) > 0) : ?>
+                    <button href="#" type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#dataPinjam">Pinjam</button>
+                  <?php endif; ?>
+                  <?php if(mysqli_num_rows($isUserId) === 0) : ?>
+                    <button href="#" type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#dataDiri">Pinjam</button>
+                  <?php endif; ?>
                 </div>
               </div>
             </div>
             <?php endwhile; ?>
           </div>
           
-          <!-- Modal -->
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <!-- Modal Pinjam -->
+          <div class="modal fade" id="dataPinjam" tabindex="-1" aria-labelledby="dataPinjamLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Formulir</h1>
+                  <h1 class="modal-title fs-5" id="dataPinjamLabel">Formulir Peminjaman</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <p class="text-danger">Silahkan isi data ini terlebih dahulu!</p>
+                  <p class="text-danger">Silahkan isi data peminjaman!</p>
+                  <form action="" method="POST">
+                    <div class="mb-3">
+                      <label for="nis" class="form-label">Tgl Pinjam</label>
+                      <input type="date" id="nis" name="tgl_pinjam" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="kelas" class="form-label">Tgl Kembali</label>
+                      <input type="date" id="kelas" name="tgl_kembali" class="form-control" required>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                  <button type="button" class="btn btn-primary">Simpan</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal data diri -->
+          <div class="modal fade" id="dataDiri" tabindex="-1" aria-labelledby="dataDiriLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="dataDiriLabel">Formulir Data Diri</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p class="text-danger">Silahkan isi data diri terlebih dahulu!</p>
                   <form action="" method="POST">
                     <div class="mb-3">
                       <label for="nis" class="form-label">NIS</label>
@@ -126,11 +176,11 @@ $isA
                       <label for="no_telp" class="form-label">No. Telp</label>
                       <input type="number" id="no_telp" name="no_telp" class="form-control" required>
                     </div>
+                    <div class="modal-footer">
+                      <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                      <button type="submit" class="btn btn-primary" name="simpan_data_diri">Simpan</button>
+                    </div>
                   </form>
-                </div>
-                <div class="modal-footer">
-                  <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                  <button type="button" class="btn btn-primary">Simpan</button>
                 </div>
               </div>
             </div>
