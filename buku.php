@@ -8,7 +8,7 @@ if(session_status() === PHP_SESSION_NONE) {
 
 $user = $_SESSION['user'];
 
-$sql = "SELECT buku.judul, buku.slug, buku.cover, buku.penulis, buku.penerbit, buku.tahun_terbit, buku.stok, kategori.nama_kategori FROM buku
+$sql = "SELECT buku.id, buku.judul, buku.slug, buku.cover, buku.penulis, buku.penerbit, buku.tahun_terbit, buku.stok, kategori.nama_kategori FROM buku
         JOIN kategori ON buku.kategori_id = kategori.id";
 $result = mysqli_query($conn, $sql);
 
@@ -27,6 +27,26 @@ if(isset($_POST['simpan_data_diri'])) {
 
   if($query) {
     echo "<script>alert('Formulir data diri berhasil diisi!')</script>";
+  }
+}
+
+if(isset($_POST['simpan_data_pinjam'])) {
+  $tgl_pinjam = $_POST['tgl_pinjam'];
+  $tgl_kembali = $_POST['tgl_kembali'];
+  $buku_id = $_POST['buku_id'];
+
+  $anggota_q = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM anggota WHERE user_id = '$user_id'"));
+  $anggota_id = $anggota_q['id'];
+  
+  $sql_p = "INSERT INTO peminjaman (anggota_id, tgl_pinjam, tgl_kembali) VALUES ('$anggota_id', '$tgl_pinjam', '$tgl_kembali')";
+  $query = mysqli_query($conn, $sql_p);
+  $peminjaman_id = mysqli_insert_id($conn);
+
+  $sql_dp = "INSERT INTO detail_peminjaman (peminjaman_id, buku_id) VALUES ('$peminjaman_id', '$buku_id')";
+  mysqli_query($conn, $sql_dp);
+
+  if($query) {
+    echo "<script>alert('Formulir peminjaman berhasil diisi!')</script>";
   }
 }
 
@@ -109,10 +129,10 @@ if(isset($_POST['simpan_data_diri'])) {
                 <div class="card-body">
                   <h5 class="card-title"><?= $data['judul'] ?></h5>
                   <?php if(mysqli_num_rows($isUserId) > 0) : ?>
-                    <button href="#" type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#dataPinjam">Pinjam</button>
+                    <button type="button" class="btn btn-primary w-100 btn-pinjam" data-bs-toggle="modal" data-bs-target="#dataPinjam" data-id="<?= $data['id'] ?>">Pinjam</button>
                   <?php endif; ?>
                   <?php if(mysqli_num_rows($isUserId) === 0) : ?>
-                    <button href="#" type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#dataDiri">Pinjam</button>
+                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#dataDiri">Pinjam</button>
                   <?php endif; ?>
                 </div>
               </div>
@@ -131,6 +151,7 @@ if(isset($_POST['simpan_data_diri'])) {
                 <div class="modal-body">
                   <p class="text-danger">Silahkan isi data peminjaman!</p>
                   <form action="" method="POST">
+                    <input type="hidden" name="buku_id" id="modal_buku_id">
                     <div class="mb-3">
                       <label for="nis" class="form-label">Tgl Pinjam</label>
                       <input type="date" id="nis" name="tgl_pinjam" class="form-control" required>
@@ -139,11 +160,10 @@ if(isset($_POST['simpan_data_diri'])) {
                       <label for="kelas" class="form-label">Tgl Kembali</label>
                       <input type="date" id="kelas" name="tgl_kembali" class="form-control" required>
                     </div>
+                    <div class="modal-footer">
+                      <button type="submit" name="simpan_data_pinjam" class="btn btn-primary">Simpan</button>
+                    </div>
                   </form>
-                </div>
-                <div class="modal-footer">
-                  <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                  <button type="button" class="btn btn-primary">Simpan</button>
                 </div>
               </div>
             </div>
@@ -177,7 +197,6 @@ if(isset($_POST['simpan_data_diri'])) {
                       <input type="number" id="no_telp" name="no_telp" class="form-control" required>
                     </div>
                     <div class="modal-footer">
-                      <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
                       <button type="submit" class="btn btn-primary" name="simpan_data_diri">Simpan</button>
                     </div>
                   </form>

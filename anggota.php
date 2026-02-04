@@ -33,7 +33,7 @@ $result = mysqli_query($conn, $sql);
           <!-- header -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0">Daftar Anggota</h5>
-            <a href="anggota/tambah.php" class="btn btn-primary"> <i class="bi bi-plus-circle"></i> Tambah Anggota </a>
+            <!-- <a href="anggota/tambah.php" class="btn btn-primary"> <i class="bi bi-plus-circle"></i> Tambah Anggota </a> -->
           </div>
 
           <table class="table table-striped">
@@ -57,7 +57,7 @@ $result = mysqli_query($conn, $sql);
                 <!-- <td><?= $data['kelas'] ?></td>
                 <td><?= $data['no_telp'] ?></td> -->
                 <td>
-                  <a href="anggota/edit.php?username=<?= $data['username'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                  <a href="anggota/detail.php?username=<?= $data['username'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-eye"></i></a>
                   <a href="anggota/hapus.php?username=<?= $data['username'] ?>" onclick="return confirm('Yakin hapus anggota ini?')" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                 </td>
               </tr>
