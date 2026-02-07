@@ -15,15 +15,13 @@ $user = $_SESSION['user'];
       <li><a class="nav-link" href="buku.php">Data Buku</a></li>
       <li><a class="nav-link" href="kategori.php">Data Kategori</a></li>
       <li><a class="nav-link" href="anggota.php">Anggota</a></li>
-      <li><a class="nav-link" href="#">Peminjaman</a></li>
-      <li><a class="nav-link" href="#">Pengembalian</a></li>
+      <li><a class="nav-link" href="peminjaman.php">Peminjaman</a></li>
     <?php endif; ?>
 
     <?php if($user['role'] === "anggota") :?>
       <li><a class="nav-link" href="buku.php">Daftar Buku</a></li>
     <?php endif; ?>
     
-    <!-- <li><a class="nav-link" href="user.php">User</a></li> -->
     <li class="mt-3"><a class="nav-link" href="logout.php">Logout</a></li>
   </ul>
 </aside>

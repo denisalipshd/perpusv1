@@ -12,7 +12,7 @@ $sql = "SELECT buku.id, buku.judul, buku.slug, buku.cover, buku.penulis, buku.pe
         JOIN kategori ON buku.kategori_id = kategori.id";
 $result = mysqli_query($conn, $sql);
 
-$user_id = (int)$user['id'];
+$user_id = $user['id'];
 $isUserId = mysqli_query($conn, "SELECT user_id FROM anggota WHERE user_id = '$user_id'");
 
 if(isset($_POST['simpan_data_diri'])) {
@@ -123,7 +123,7 @@ if(isset($_POST['simpan_data_pinjam'])) {
           <?php if($user['role'] === 'anggota') : ?>
           <div class="row">
             <?php while($data = mysqli_fetch_assoc($result)) : ?>
-            <div class="col-md-4">
+            <div class="col-md-4 mb-3">
               <div class="card h-100">
                 <img src="utils/uploads/buku/<?= $data['cover'] ?>" class="card-img-top" alt="..." style="height: 280px; object-fit: cover;">
                 <div class="card-body">
