@@ -8,7 +8,7 @@ if(session_status() === PHP_SESSION_NONE) {
 
 $user = $_SESSION['user'];
 
-$sql = "SELECT buku.id, buku.judul, buku.slug, buku.cover, buku.penulis, buku.penerbit, buku.tahun_terbit, buku.stok, kategori.nama_kategori FROM buku
+$sql = "SELECT buku.id, buku.judul, buku.slug, buku.cover, buku.stok, kategori.nama_kategori FROM buku
         JOIN kategori ON buku.kategori_id = kategori.id";
 $result = mysqli_query($conn, $sql);
 
@@ -45,8 +45,18 @@ if(isset($_POST['simpan_data_pinjam'])) {
   $sql_dp = "INSERT INTO detail_peminjaman (peminjaman_id, buku_id) VALUES ('$peminjaman_id', '$buku_id')";
   mysqli_query($conn, $sql_dp);
 
+  $buku_q = mysqli_fetch_assoc(mysqli_query($conn, "SELECT stok FROM buku WHERE id = '$buku_id'"));
+  $stok_sekarang = $buku_q['stok'];
+
+  if($stok_sekarang > 0) {
+    $stok_baru = $stok_sekarang - 1;
+    mysqli_query($conn, "UPDATE buku SET stok = '$stok_baru' WHERE id = '$buku_id'");
+  } else {
+    echo "<script>alert('Maaf, stok buku habis!'); window.location='buku.php';</script>";
+  }
+
   if($query) {
-    echo "<script>alert('Formulir peminjaman berhasil diisi!')</script>";
+    echo "<script>alert('Buku berhasil dipinjam!')</script>";
   }
 }
 
@@ -128,11 +138,15 @@ if(isset($_POST['simpan_data_pinjam'])) {
                 <img src="utils/uploads/buku/<?= $data['cover'] ?>" class="card-img-top" alt="..." style="height: 280px; object-fit: cover;">
                 <div class="card-body">
                   <h5 class="card-title"><?= $data['judul'] ?></h5>
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="text-secondary">Stok : <?= $data['stok'] ?></span>
+                    <span class="badge text-bg-primary"><?= $data['nama_kategori'] ?></span>
+                  </div>
                   <?php if(mysqli_num_rows($isUserId) > 0) : ?>
-                    <button type="button" class="btn btn-primary w-100 btn-pinjam" data-bs-toggle="modal" data-bs-target="#dataPinjam" data-id="<?= $data['id'] ?>">Pinjam</button>
+                    <button type="button" class="btn btn-primary w-100 btn-pinjam mt-2" data-bs-toggle="modal" data-bs-target="#dataPinjam" data-id="<?= $data['id'] ?>">Pinjam</button>
                   <?php endif; ?>
                   <?php if(mysqli_num_rows($isUserId) === 0) : ?>
-                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#dataDiri">Pinjam</button>
+                    <button type="button" class="btn btn-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#dataDiri">Pinjam</button>
                   <?php endif; ?>
                 </div>
               </div>
