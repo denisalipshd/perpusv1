@@ -8,7 +8,7 @@ if(session_status() === PHP_SESSION_NONE) {
 
 $user = $_SESSION['user'];
 
-$sql = "SELECT buku.id, buku.judul, buku.slug, buku.cover, buku.stok, kategori.nama_kategori FROM buku
+$sql = "SELECT buku.id, buku.judul, buku.slug, buku.cover, buku.stok, buku.penulis, buku.penerbit, buku.tahun_terbit, kategori.nama_kategori FROM buku
         JOIN kategori ON buku.kategori_id = kategori.id";
 $result = mysqli_query($conn, $sql);
 
